@@ -29,7 +29,7 @@ namespace API.Controllers
             if(await UserExist(registerDto.Username)) return BadRequest("User Name is Exist!!!");
             using var hmac= new HMACSHA512();
             var user = new AppUser{
-                UserName=registerDto.Username,
+                UserName=registerDto.Username.ToLower(),
                 PasswordHash=hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt=hmac.Key
             };
