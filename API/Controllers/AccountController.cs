@@ -29,14 +29,14 @@ namespace API.Controllers
             if(await UserExist(registerDto.Username)) return BadRequest("User Name is Exist!!!");
             using var hmac= new HMACSHA512();
             var user = new AppUser{
-                UserName=registerDto.Username.ToLower(),
-                PasswordHash=hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                PasswordSalt=hmac.Key
+                userName=registerDto.Username.ToLower(),
+                passwordHash=hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+                passwordSalt=hmac.Key
             };
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return new UserDto{
-                UserName=user.UserName,
+                UserName=user.userName,
                 Token=_tokenservice.CreateToken(user)
             };
         }
@@ -44,18 +44,18 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(x=>x.UserName==loginDto.UserName);
+            var user = await _context.Users.SingleOrDefaultAsync(x=>x.userName==loginDto.UserName);
             if(user==null) return Unauthorized("Invalid User Name");
 
-            using var hmac=new HMACSHA512(user.PasswordSalt);
+            using var hmac=new HMACSHA512(user.passwordSalt);
             var computeHash=hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
             for (int i = 0; i < computeHash.Length; i++)
             {
-              if(computeHash[i]!=user.PasswordHash[i]) 
+              if(computeHash[i]!=user.passwordHash[i]) 
               return Unauthorized("Invalid Password");
             }
            return new UserDto{
-                UserName=user.UserName,
+                UserName=user.userName,
                 Token=_tokenservice.CreateToken(user)
             };
         }
@@ -64,7 +64,7 @@ namespace API.Controllers
         
         public async Task<bool> UserExist(string username)
         {
-            return await _context.Users.AnyAsync(x=>x.UserName==username.ToLower());
+            return await _context.Users.AnyAsync(x=>x.userName==username.ToLower());
         }
     }
 }

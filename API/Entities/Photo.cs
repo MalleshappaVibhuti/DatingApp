@@ -5,11 +5,11 @@ namespace API.Entities
     [Table("Photos")]
     public class Photo
     {
-        public int ID { get; set; }
-        public string Url { get; set; }
-        public bool IsMain { get; set; }
-        public string PublicId { get; set; }
-        public AppUser AppUser { get; set; }
-        public int AppUserId { get; set; }
+        public int id { get; set; }
+        public string url { get; set; }
+        public bool isMain { get; set; }
+        public string publicId { get; set; }
+        public AppUser appUser { get; set; }
+        public int appUserId { get; set; }
     }
 }

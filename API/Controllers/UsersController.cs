@@ -12,32 +12,40 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
-{    
+{
     [Authorize]
     public class UsersController : BaseApiController
-    {      
-    
+    {
+
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        
+
         public UsersController(IUserRepository userRepository, IMapper mapper)
         {
             _mapper = mapper;
-            _userRepository = userRepository;           
+            _userRepository = userRepository;
         }
 
-        [HttpGet]       
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
-        { 
-          var users = await _userRepository.GetMembersAsync();
-          
-          return Ok(users);
+        {
+            var users = await _userRepository.GetMembersAsync();
+
+            return Ok(users);
         }
 
-      [HttpGet("username")]
-      public async Task<ActionResult<MemberDto>> GetUser(string username){
-        return await _userRepository.GetMemberAsync(username);
-      } 
-     
+        [HttpGet("username")]
+        public async Task<ActionResult<MemberDto>> GetUser(string username)
+        {
+            var user = await _userRepository.GetMemberAsync(username);
+            return Ok(user);
+
+        }
+
+        // [HttpGet("username")]
+        // public async Task<ActionResult<AppUser>> getUserByName(string username){
+        //   return await _userRepository.GetUserByUserNameAsync(username);
+        // } 
+
     }
 }

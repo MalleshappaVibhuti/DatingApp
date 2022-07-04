@@ -15,7 +15,7 @@ namespace API.Data
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public UserRepository(DataContext context,IMapper mapper)
+        public UserRepository(DataContext context, IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
@@ -28,41 +28,41 @@ namespace API.Data
             .ToListAsync();
         }
 
-        public async  Task<MemberDto> GetMemberAsync(string username)
+        public async Task<MemberDto> GetMemberAsync(string username)
         {
             return await _context.Users
-            .Where(x=>x.UserName==username)
+            .Where(x => x.userName == username.ToLower())
             .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
         {
-           return await _context.Users.FindAsync(id);
+            return await _context.Users.FindAsync(id);
         }
 
         public async Task<AppUser> GetUserByUserNameAsync(string username)
         {
             return await _context.Users
-            .Include(p=>p.Photos)
-            .SingleOrDefaultAsync(d=>d.UserName == username);
+            .Include(p => p.photos)
+            .SingleOrDefaultAsync(d => d.userName == username);
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersAsync()
         {
             return await _context.Users
-            .Include(p=>p.Photos)
+            .Include(p => p.photos)
             .ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()
         {
-            return await _context.SaveChangesAsync()>0;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public void Update(AppUser appUser)
         {
-            _context.Entry(appUser).State=EntityState.Modified;
+            _context.Entry(appUser).State = EntityState.Modified;
         }
     }
 }
